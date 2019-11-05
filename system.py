@@ -1,3 +1,11 @@
+# Stetsenko Olexandr 
+# System code source
+# Description:
+# This file contains python's codes for the system. 
+# Here system is initialized and created 
+# In system we have different operations that can be call by the actors 
+
+
 import psycopg2
 from actors import * 
 
@@ -12,7 +20,7 @@ class system:
 		self.user = None  
 
 	def databaseConnection(actor,database,username,password,localhost):
-		connection = psycopg2.connect("dbname ="+database+" user = "+username+" password = "+password+" host = "+localhost)
+		connection = psycopg2.connect("dbname ="+database+" user = "+username+" password = "+ password + " host = "+localhost)
 		cursor = connection.cursor()
 		return cursor
 
@@ -30,7 +38,7 @@ class system:
 					Amount REAL,
 					PRIMARY KEY(Username)
                     );'''
-            cursor.execute(create_table_query)
+      cursor.execute(create_table_query)
 
         if (type(actor).__name__ == "actAdmin"):
         	cursor.execute("DROP TABLE IF EXISTS Admin;")
@@ -42,27 +50,35 @@ class system:
 					Password VARCHAR(255),
 					PRIMARY KEY(Username)
                     );'''
-            cursor.execute(create_table_query)
-        if (type(actor).__name__ == "theCreator"):
-        	cursor.execute("DROP TABLE IF EXISTS Creator;")
+      cursor.execute(create_table_query)
+    
 
-			create_table_query = '''CREATE TABLE Creator(
-					FirstName VARCHAR(255),
-					LastName VARCHAR(255),
-					PRIMARY KEY(FirstName)
+
+    create_table_query = '''CREATE TABLE HistoryOfTransaction(
+          UsernameSender VARCHAR(255),
+          UsernameReceiver VARCHAR(255),
+          Amount REAL,
+          PRIMARY KEY()
                     );'''
-            cursor.execute(create_table_query)
+    cursor.execute(create_table_query)
+    cursor.close()
+    connection.commit()
 
 
     def createAdmin(fisrtName,lastName,username,password):
     	cursor = databaseConnection(actor,database,username,password,localhost)
     	statement = "INSERT INTO Admin VALUES("+str(fisrtName)+","+str(lastName)+","+str(username)+","+str(password)+")"
     	cursor.execute(statement)
+      cursor.close()
+      connection.commit()
 
    	def createClient(fisrtName,lastName,username,password, initialAmount):
    		cursor = databaseConnection(actor,database,username,password,localhost)
     	statement = "INSERT INTO Admin VALUES("+str(fisrtName)+","+str(lastName)+","+str(username)+","+str(password)+","+float(initialAmount)+")"
     	cursor.execute(statement)
+      cursor.close()
+      connection.commit()
+
 
    	def createClientInstance(username,password,fisrtName,lastName):
    		client = actClient(fisrtName,lastName,username,password,500)
@@ -97,7 +113,16 @@ class system:
    		return 
 
    	def oeSentMoney(firstName, lastName,amount):
-   		return 
+   		cursor = databaseConnection(actor,database,username,password,localhost)
+      usernameSender = self.user.username
+      cursor.execute("SELECT username,amount FROM Client WHERE firstName ="+str(firstName)+", lastName ="+str(lastName))
+      result = cursor.fetchall()
+      usernameReceiver,amountReceiver = result[0], result[1]
+      amountReceiver += amount
+      statement = "SELECT amount"
+      cursor.execute()
+
+
 
 
 

@@ -1,3 +1,9 @@
+# Stetsenko Olexandtr 
+# Actors 
+# Description:
+# In this file, we have the structure(classes) how actors 
+# are defined. 
+
 class actAdmin():
 	def __init__(self,fisrtName,lastName,username,password):
 		self.fisrtName = fisrtName
